@@ -1,4 +1,4 @@
-package fr.afcepf.al32.wsrecherche.service;
+package fr.afcepf.al32.wsrecherche.service.itf;
 
 import java.util.List;
 
