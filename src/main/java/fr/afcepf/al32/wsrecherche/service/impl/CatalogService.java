@@ -10,10 +10,12 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.afcepf.al32.wsrecherche.dao.itf.IPromotionDao;
 import fr.afcepf.al32.wsrecherche.dao.itf.IRechercheProduits;
 import fr.afcepf.al32.wsrecherche.entity.BaseProduct;
 import fr.afcepf.al32.wsrecherche.entity.CategoryProduct;
 import fr.afcepf.al32.wsrecherche.entity.Promotion;
+import fr.afcepf.al32.wsrecherche.entity.Shop;
 import fr.afcepf.al32.wsrecherche.service.itf.ICatalogService;
 import fr.afcepf.al32.wsrecherche.service.itf.IServiceCategoryProduct;
 import fr.afcepf.al32.wsrecherche.service.itf.IServicePromotion;
@@ -29,6 +31,10 @@ public class CatalogService implements ICatalogService {
 	
 	@Autowired
 	IServiceCategoryProduct categoryService;
+	
+	@Autowired
+	IPromotionDao promotionDao;
+	
 	
 	@Override
 	public List<Promotion> getAllDisplayablePromotion() {
@@ -60,10 +66,36 @@ public class CatalogService implements ICatalogService {
 				.collect(Collectors.toList());
 	}
 
+	
+	@Override
+	public List<Promotion> searchByKeyWords(List<String> keyWords) {
+		
+		List<BaseProduct> products = rechercheProduitsDao.rechercherProduitSurMotsCles(keyWords);
+		List<Promotion> list = promotionService.getAllValidPromotionByProduct(products);
+		
+		return list.stream()
+				.filter(promotion -> {
+			LocalDateTime publishDate = promotion.getPublish().getPublishDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+			return LocalDateTime.now().isBefore(publishDate.plus(promotion.getLimitTimePromotion()));
+				})
+				.collect(Collectors.toList());
+	}
 	@Override
 	public List<Promotion> searchByCategory(CategoryProduct category) {
 		List<Promotion> list = getAllDisplayablePromotion();
 		return list.stream().filter(promotion -> category.equals(promotion.getBaseProduct().getReferenceProduct().getCategoriesProduct())).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Promotion> searchByShop(List<Shop> shops) { 
+		List<Promotion> list = promotionService.getAllValidPromotionByShop(shops);
+		return list.stream().filter(promotion -> {
+			LocalDateTime publishDate = promotion.getPublish().getPublishDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+			return LocalDateTime.now().isBefore(publishDate.plus(promotion.getLimitTimePromotion()));
+			
+		
+		}).collect(Collectors.toList());
+		 
 	}
 	
 	

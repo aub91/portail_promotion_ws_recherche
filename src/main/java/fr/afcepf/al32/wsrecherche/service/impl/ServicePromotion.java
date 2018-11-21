@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import fr.afcepf.al32.wsrecherche.dao.itf.IPromotionDao;
 import fr.afcepf.al32.wsrecherche.entity.BaseProduct;
 import fr.afcepf.al32.wsrecherche.entity.Promotion;
+import fr.afcepf.al32.wsrecherche.entity.Shop;
 import fr.afcepf.al32.wsrecherche.service.itf.IServicePromotion;
 
 @Transactional
@@ -31,7 +32,6 @@ public class ServicePromotion implements IServicePromotion {
 
 	@Override
 	public Promotion recherchePromotionParIdentifiant(Long idUnite) {
-	
 		return promotiondao.findOne(idUnite);
 	}
 
@@ -44,9 +44,8 @@ public class ServicePromotion implements IServicePromotion {
 	@Override
 	public List<Promotion> getAllValidPromotionByProduct(List<BaseProduct> products) {
 		List<Promotion> validPromos = promotiondao.findAllValid();
-		
 		List<Promotion> result = new ArrayList<>();
-		
+
 		for (Promotion promotion : validPromos) {
 			for (BaseProduct product : products) {
 				if(product.getId().equals(promotion.getBaseProduct().getId())) {
@@ -55,7 +54,22 @@ public class ServicePromotion implements IServicePromotion {
 				}
 			}
 		}
-		
+		return result;
+	}
+
+	@Override
+	public List<Promotion> getAllValidPromotionByShop(List<Shop> shops) {
+		List<Promotion> validPromos = promotiondao.findAllValid();
+		List<Promotion> result = new ArrayList<>();
+		for (Promotion promotion : validPromos) {
+			for (Shop shop : shops) {
+				if(promotion.getShops().get(shop.getId()) !=null) {
+					result.add(promotion);
+					break;
+				}
+			}
+		}
+
 		return result;
 	}
 

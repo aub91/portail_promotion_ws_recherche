@@ -8,7 +8,9 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Component;
 
+import fr.afcepf.al32.wsrecherche.entity.BaseProduct;
 import fr.afcepf.al32.wsrecherche.entity.Promotion;
+import fr.afcepf.al32.wsrecherche.entity.Shop;
 import fr.afcepf.al32.wsrecherche.dao.itf.IPromotionDao;
 
 @Transactional
@@ -17,9 +19,10 @@ public class PromotionDao implements IPromotionDao {
 	@PersistenceContext
 	private EntityManager entityManager;
 
+
 	@Override
 	public Promotion findOne(Long idUnite) {
-	return entityManager.find(Promotion.class, idUnite);
+		return entityManager.find(Promotion.class, idUnite);
 	}
 
 	@Override
@@ -29,7 +32,7 @@ public class PromotionDao implements IPromotionDao {
 
 	@Override
 	public List<Promotion> findAll() {
-		
+
 		return entityManager.createNamedQuery("Promotion.findAll",Promotion.class).getResultList();
 	}
 
@@ -49,5 +52,6 @@ public class PromotionDao implements IPromotionDao {
 		Promotion p = entityManager.find(Promotion.class, numero);
 		entityManager.remove(p);
 	}
+
 
 }

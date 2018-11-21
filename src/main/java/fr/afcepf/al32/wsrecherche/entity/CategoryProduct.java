@@ -81,4 +81,9 @@ public class CategoryProduct implements IFollowableElement {
 		return FollowableElementType.CATEGORY;
 	}
 
+	public Object stream() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
