@@ -13,7 +13,7 @@ public class SearchPromotionAndCategoryDto {
 
 	private List<Promotion> promotions ;
 
-	private CategoryProduct selectedCategory;
+	private CategoryProductDto categoryProductDto;
 
 	private List<String> keyWords ;
 	

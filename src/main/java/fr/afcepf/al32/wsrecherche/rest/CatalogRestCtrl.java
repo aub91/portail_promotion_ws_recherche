@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.afcepf.al32.wsrecherche.dto.CategoryProductDto;
+import fr.afcepf.al32.wsrecherche.dto.PromotionDto;
 import fr.afcepf.al32.wsrecherche.dto.SearchPromotionAndCategoryDto;
 import fr.afcepf.al32.wsrecherche.entity.CategoryProduct;
 import fr.afcepf.al32.wsrecherche.entity.Promotion;
@@ -29,7 +31,7 @@ public class CatalogRestCtrl {
 	@GetMapping("/byCategoryAndKeywords")
 	public List<Promotion> getSearchByCategoryAndKeywords(@RequestBody SearchPromotionAndCategoryDto searchPromotionAndCategoryDto) {
 
-		return catalogService.searchByCategoryAndKeyWords(searchPromotionAndCategoryDto.getSelectedCategory(),searchPromotionAndCategoryDto.getKeyWords());
+		return catalogService.searchByCategoryAndKeyWords(searchPromotionAndCategoryDto.getCategoryProductDto(),searchPromotionAndCategoryDto.getKeyWords());
 
 	}
 
@@ -40,9 +42,9 @@ public class CatalogRestCtrl {
 	}
 
 	@GetMapping("/byCategory")
-	public List<Promotion> getSearchByCategory(@RequestBody CategoryProduct category) {
+	public List<Promotion> getSearchByCategory(@RequestBody CategoryProductDto categoryProductDto) {
 
-		return catalogService.searchByCategory(category);
+		return catalogService.searchByCategory(categoryProductDto);
 
 	}
 

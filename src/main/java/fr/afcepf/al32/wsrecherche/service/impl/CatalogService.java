@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import fr.afcepf.al32.wsrecherche.dao.itf.IPromotionDao;
 import fr.afcepf.al32.wsrecherche.dao.itf.IRechercheProduits;
 import fr.afcepf.al32.wsrecherche.dto.CategoryProductDto;
+import fr.afcepf.al32.wsrecherche.dto.PromotionDto;
 import fr.afcepf.al32.wsrecherche.entity.BaseProduct;
 import fr.afcepf.al32.wsrecherche.entity.CategoryProduct;
 import fr.afcepf.al32.wsrecherche.entity.Promotion;
@@ -33,10 +34,6 @@ public class CatalogService implements ICatalogService {
 
 	@Autowired
 	IServiceCategoryProduct categoryService;
-
-	@Autowired
-	IPromotionDao promotionDao;
-
 
 	@Override
 	public List<Promotion> getAllDisplayablePromotion() {
