@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import fr.afcepf.al32.wsrecherche.dao.itf.IPromotionDao;
 import fr.afcepf.al32.wsrecherche.dao.itf.IRechercheProduits;
+import fr.afcepf.al32.wsrecherche.dto.CategoryProductDto;
 import fr.afcepf.al32.wsrecherche.entity.BaseProduct;
 import fr.afcepf.al32.wsrecherche.entity.CategoryProduct;
 import fr.afcepf.al32.wsrecherche.entity.Promotion;
@@ -51,12 +52,12 @@ public class CatalogService implements ICatalogService {
 	}
 
 	@Override
-	public List<Promotion> searchByCategoryAndKeyWords(CategoryProduct selectedCategory, List<String> keyWords) {
+	public List<Promotion> searchByCategoryAndKeyWords(CategoryProductDto categoryProductDto, List<String> keyWords) {
 
 		List<BaseProduct> products = rechercheProduitsDao.rechercherProduitSurMotsCles(keyWords);
 		List<Promotion> list = promotionService.getAllValidPromotionByProduct(products);
 
-		Stream<Promotion> stream = selectedCategory == null? list.stream() : list.stream().filter(promotion -> filterOnCategoryName(selectedCategory, promotion));
+		Stream<Promotion> stream = categoryProductDto == null? list.stream() : list.stream().filter(promotion -> filterOnCategoryName(categoryProductDto, promotion));
 		return stream.filter(promotion -> filterOnDate(promotion))
 				.collect(Collectors.toList());
 	}
@@ -73,22 +74,22 @@ public class CatalogService implements ICatalogService {
 				.collect(Collectors.toList());
 	}
 	@Override
-	public List<Promotion> searchByCategory(CategoryProduct category) {
+	public List<Promotion> searchByCategory(CategoryProductDto categoryProductDto) {
 		List<Promotion> list = getAllDisplayablePromotion();
-		return list.stream().filter(promotion -> filterOnCategoryName(category, promotion)).collect(Collectors.toList());
+		return list.stream().filter(promotion -> filterOnCategoryName(categoryProductDto, promotion)).collect(Collectors.toList());
 	}
 
-	private boolean filterOnCategoryName(CategoryProduct category, Promotion promotion){
-		String categoryName = category.getName();
+	private boolean filterOnCategoryName(CategoryProductDto categoryProductDto, Promotion promotion){
+		Long categoryId = categoryProductDto.getId();
 		CategoryProduct promotionCategory = promotion.getBaseProduct().getReferenceProduct().getCategoriesProduct();
-		return isSubCategoryOf(categoryName, promotionCategory);
+		return isSubCategoryOf(categoryId, promotionCategory);
 	}
 
-	private boolean isSubCategoryOf(String targetCategoryName, CategoryProduct categoryToCompare){
-		if(categoryToCompare.getName().equals(targetCategoryName)){
+	private boolean isSubCategoryOf(Long targetCategoryId, CategoryProduct categoryToCompare){
+		if(categoryToCompare.getId().equals(targetCategoryId)){
 			return true;
 		} else if (categoryToCompare.getCategoryMum() != null){
-			return isSubCategoryOf(targetCategoryName, categoryToCompare.getCategoryMum());
+			return isSubCategoryOf(targetCategoryId, categoryToCompare.getCategoryMum());
 		} else {
 			return false;
 		}
