@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 
@@ -25,24 +26,24 @@ import fr.afcepf.al32.wsrecherche.service.itf.IServicePromotion;
 public class CatalogService implements ICatalogService {
 	@Autowired
 	IServicePromotion promotionService;
-	
+
 	@Autowired
 	IRechercheProduits rechercheProduitsDao;
-	
+
 	@Autowired
 	IServiceCategoryProduct categoryService;
-	
+
 	@Autowired
 	IPromotionDao promotionDao;
-	
-	
+
+
 	@Override
 	public List<Promotion> getAllDisplayablePromotion() {
 		List<Promotion> list = promotionService.findAllValid();
 		return list.stream()
 				.filter(promotion -> {
-			LocalDateTime publishDate = promotion.getPublish().getPublishDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-			return LocalDateTime.now().isBefore(publishDate.plus(promotion.getLimitTimePromotion()));
+					LocalDateTime publishDate = promotion.getPublish().getPublishDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+					return LocalDateTime.now().isBefore(publishDate.plus(promotion.getLimitTimePromotion()));
 				})
 				.collect(Collectors.toList());
 	}
@@ -54,49 +55,73 @@ public class CatalogService implements ICatalogService {
 
 	@Override
 	public List<Promotion> searchByCategoryAndKeyWords(CategoryProduct selectedCategory, List<String> keyWords) {
-		
+
 		List<BaseProduct> products = rechercheProduitsDao.rechercherProduitSurMotsCles(keyWords);
 		List<Promotion> list = promotionService.getAllValidPromotionByProduct(products);
-		
-		return list.stream()
-				.filter(promotion -> {
+
+		Stream<Promotion> stream = selectedCategory == null? list.stream() : list.stream().filter(promotion -> filterOnCategoryName(selectedCategory, promotion));
+		return stream.filter(promotion -> {
 			LocalDateTime publishDate = promotion.getPublish().getPublishDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 			return LocalDateTime.now().isBefore(publishDate.plus(promotion.getLimitTimePromotion()));
-				})
+		})
 				.collect(Collectors.toList());
 	}
 
-	
+
 	@Override
 	public List<Promotion> searchByKeyWords(List<String> keyWords) {
-		
+
 		List<BaseProduct> products = rechercheProduitsDao.rechercherProduitSurMotsCles(keyWords);
 		List<Promotion> list = promotionService.getAllValidPromotionByProduct(products);
-		
+
 		return list.stream()
 				.filter(promotion -> {
-			LocalDateTime publishDate = promotion.getPublish().getPublishDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-			return LocalDateTime.now().isBefore(publishDate.plus(promotion.getLimitTimePromotion()));
+					LocalDateTime publishDate = promotion.getPublish().getPublishDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+					return LocalDateTime.now().isBefore(publishDate.plus(promotion.getLimitTimePromotion()));
 				})
 				.collect(Collectors.toList());
 	}
 	@Override
 	public List<Promotion> searchByCategory(CategoryProduct category) {
 		List<Promotion> list = getAllDisplayablePromotion();
-		return list.stream().filter(promotion -> category.equals(promotion.getBaseProduct().getReferenceProduct().getCategoriesProduct())).collect(Collectors.toList());
+		return list.stream().filter(promotion -> filterOnCategoryName(category, promotion)).collect(Collectors.toList());
 	}
+
+	private boolean filterOnCategoryName(CategoryProduct category, Promotion promotion){
+		String categoryName = category.getName();
+		CategoryProduct promotionCategory = promotion.getBaseProduct().getReferenceProduct().getCategoriesProduct();
+		return isSubCategoryOf(categoryName, promotionCategory);
+	}
+
+	private boolean isSubCategoryOf(String targetCategoryName, CategoryProduct categoryToCompare){
+		if(categoryToCompare.getName().equals(targetCategoryName)){
+			return true;
+		} else if (categoryToCompare.getCategoryMum() != null){
+			return isSubCategoryOf(targetCategoryName, categoryToCompare.getCategoryMum());
+		} else {
+			return false;
+		}
+	}
+
+
+
+
+
+
+
+
 
 	@Override
 	public List<Promotion> searchByShop(List<Shop> shops) { 
 		List<Promotion> list = promotionService.getAllValidPromotionByShop(shops);
-		return list.stream().filter(promotion -> {
-			LocalDateTime publishDate = promotion.getPublish().getPublishDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-			return LocalDateTime.now().isBefore(publishDate.plus(promotion.getLimitTimePromotion()));
-			
-		
-		}).collect(Collectors.toList());
-		 
+		return list.stream().filter(promotion -> filterOnShop(shops, promotion)).collect(Collectors.toList());
 	}
-	
-	
+
+	private boolean filterOnShop(List<Shop> shops, Promotion promotion){
+		return false;
+
+	}
+
+
+
 }
