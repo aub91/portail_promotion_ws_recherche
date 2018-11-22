@@ -11,14 +11,13 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.afcepf.al32.wsrecherche.dao.itf.IPromotionDao;
 import fr.afcepf.al32.wsrecherche.dao.itf.IRechercheProduits;
 import fr.afcepf.al32.wsrecherche.dto.CategoryProductDto;
 import fr.afcepf.al32.wsrecherche.dto.PromotionDto;
+import fr.afcepf.al32.wsrecherche.dto.ShopDto;
 import fr.afcepf.al32.wsrecherche.entity.BaseProduct;
 import fr.afcepf.al32.wsrecherche.entity.CategoryProduct;
 import fr.afcepf.al32.wsrecherche.entity.Promotion;
-import fr.afcepf.al32.wsrecherche.entity.Shop;
 import fr.afcepf.al32.wsrecherche.service.itf.ICatalogService;
 import fr.afcepf.al32.wsrecherche.service.itf.IServiceCategoryProduct;
 import fr.afcepf.al32.wsrecherche.service.itf.IServicePromotion;
@@ -49,31 +48,31 @@ public class CatalogService implements ICatalogService {
 	}
 
 	@Override
-	public List<Promotion> searchByCategoryAndKeyWords(CategoryProductDto categoryProductDto, List<String> keyWords) {
+	public List<PromotionDto> searchByCategoryAndKeyWords(CategoryProductDto categoryProductDto, List<String> keyWords) {
 
 		List<BaseProduct> products = rechercheProduitsDao.rechercherProduitSurMotsCles(keyWords);
 		List<Promotion> list = promotionService.getAllValidPromotionByProduct(products);
 
 		Stream<Promotion> stream = categoryProductDto == null? list.stream() : list.stream().filter(promotion -> filterOnCategoryName(categoryProductDto, promotion));
-		return stream.filter(promotion -> filterOnDate(promotion))
+		return stream.filter(promotion -> filterOnDate(promotion)).map(promotion-> new PromotionDto(promotion))
 				.collect(Collectors.toList());
 	}
 
 
 	@Override
-	public List<Promotion> searchByKeyWords(List<String> keyWords) {
+	public List<PromotionDto> searchByKeyWords(List<String> keyWords) {
 
 		List<BaseProduct> products = rechercheProduitsDao.rechercherProduitSurMotsCles(keyWords);
 		List<Promotion> list = promotionService.getAllValidPromotionByProduct(products);
 
 		return list.stream()
-				.filter(promotion -> filterOnDate(promotion))
+				.filter(promotion -> filterOnDate(promotion)).map(promotion-> new PromotionDto(promotion))
 				.collect(Collectors.toList());
 	}
 	@Override
-	public List<Promotion> searchByCategory(CategoryProductDto categoryProductDto) {
+	public List<PromotionDto> searchByCategory(CategoryProductDto categoryProductDto) {
 		List<Promotion> list = getAllDisplayablePromotion();
-		return list.stream().filter(promotion -> filterOnCategoryName(categoryProductDto, promotion)).collect(Collectors.toList());
+		return list.stream().filter(promotion -> filterOnCategoryName(categoryProductDto, promotion)).map(promotion-> new PromotionDto(promotion)).collect(Collectors.toList());
 	}
 
 	private boolean filterOnCategoryName(CategoryProductDto categoryProductDto, Promotion promotion){
@@ -94,17 +93,13 @@ public class CatalogService implements ICatalogService {
 
  
 	@Override
-	public List<Promotion> searchByShop(List<Shop> shops) { 
+	public List<PromotionDto> searchByShop(List<ShopDto> shops) { 
 		List<Promotion> list = promotionService.getAllValidPromotionByShop(shops);
-		return list.stream().filter(promotion -> filterOnDate(promotion)).collect(Collectors.toList());
+		return list.stream().filter(promotion -> filterOnDate(promotion)).map(promotion-> new PromotionDto(promotion)).collect(Collectors.toList());
 	}
 	
 	private boolean filterOnDate(Promotion promotion) {
 		LocalDateTime publishDate = promotion.getPublish().getPublishDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 		return LocalDateTime.now().isBefore(publishDate.plus(promotion.getLimitTimePromotion()));
 	}
-	
-	
-	
-
 }

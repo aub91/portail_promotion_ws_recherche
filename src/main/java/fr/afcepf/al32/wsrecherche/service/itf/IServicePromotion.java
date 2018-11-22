@@ -2,9 +2,9 @@ package fr.afcepf.al32.wsrecherche.service.itf;
 
 import java.util.List;
 
+import fr.afcepf.al32.wsrecherche.dto.ShopDto;
 import fr.afcepf.al32.wsrecherche.entity.BaseProduct;
 import fr.afcepf.al32.wsrecherche.entity.Promotion;
-import fr.afcepf.al32.wsrecherche.entity.Shop;
 
 public interface IServicePromotion {
 	List<Promotion> findAll();
@@ -12,5 +12,6 @@ public interface IServicePromotion {
 	Promotion recherchePromotionParIdentifiant(Long idUnite);
 	Promotion ajouterPromotion(Promotion promotion);
 	List<Promotion> getAllValidPromotionByProduct(List<BaseProduct> products);
-	List<Promotion> getAllValidPromotionByShop(List<Shop> shops);
+	List<Promotion> getAllValidPromotionByShop(List<ShopDto> shops);
 }
+	

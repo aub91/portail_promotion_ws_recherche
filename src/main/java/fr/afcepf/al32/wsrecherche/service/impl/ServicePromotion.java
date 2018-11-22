@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.afcepf.al32.wsrecherche.dao.itf.IPromotionDao;
+import fr.afcepf.al32.wsrecherche.dto.ShopDto;
 import fr.afcepf.al32.wsrecherche.entity.BaseProduct;
 import fr.afcepf.al32.wsrecherche.entity.Promotion;
-import fr.afcepf.al32.wsrecherche.entity.Shop;
 import fr.afcepf.al32.wsrecherche.service.itf.IServicePromotion;
 
 @Transactional
@@ -58,11 +58,11 @@ public class ServicePromotion implements IServicePromotion {
 	}
 
 	@Override
-	public List<Promotion> getAllValidPromotionByShop(List<Shop> shops) {
+	public List<Promotion> getAllValidPromotionByShop(List<ShopDto> shops) {
 		List<Promotion> validPromos = promotiondao.findAllValid();
 		List<Promotion> result = new ArrayList<>();
 		for (Promotion promotion : validPromos) {
-			for (Shop shop : shops) {
+			for (ShopDto shop : shops) {
 				if(promotion.getShops().get(shop.getId()) !=null) {
 					result.add(promotion);
 					break;

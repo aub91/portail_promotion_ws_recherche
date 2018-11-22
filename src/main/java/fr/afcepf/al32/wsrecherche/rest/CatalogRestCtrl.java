@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import fr.afcepf.al32.wsrecherche.dto.CategoryProductDto;
 import fr.afcepf.al32.wsrecherche.dto.PromotionDto;
 import fr.afcepf.al32.wsrecherche.dto.SearchPromotionAndCategoryDto;
-import fr.afcepf.al32.wsrecherche.entity.CategoryProduct;
-import fr.afcepf.al32.wsrecherche.entity.Promotion;
-import fr.afcepf.al32.wsrecherche.entity.Shop;
+import fr.afcepf.al32.wsrecherche.dto.ShopDto;
 import fr.afcepf.al32.wsrecherche.service.itf.ICatalogService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,20 +27,20 @@ public class CatalogRestCtrl {
 	private ICatalogService catalogService;
 
 	@GetMapping("/byCategoryAndKeywords")
-	public List<Promotion> getSearchByCategoryAndKeywords(@RequestBody SearchPromotionAndCategoryDto searchPromotionAndCategoryDto) {
+	public List<PromotionDto> getSearchByCategoryAndKeywords(@RequestBody SearchPromotionAndCategoryDto searchPromotionAndCategoryDto) {
 
 		return catalogService.searchByCategoryAndKeyWords(searchPromotionAndCategoryDto.getCategoryProductDto(),searchPromotionAndCategoryDto.getKeyWords());
 
 	}
 
 	@GetMapping("/byKeywords")
-	public List<Promotion> getSearchByKeywords(@RequestBody List<String> keyWords) {
+	public List<PromotionDto> getSearchByKeywords(@RequestBody List<String> keyWords) {
 
 		return catalogService.searchByKeyWords(keyWords);
 	}
 
 	@GetMapping("/byCategory")
-	public List<Promotion> getSearchByCategory(@RequestBody CategoryProductDto categoryProductDto) {
+	public List<PromotionDto> getSearchByCategory(@RequestBody CategoryProductDto categoryProductDto) {
 
 		return catalogService.searchByCategory(categoryProductDto);
 
@@ -50,7 +48,7 @@ public class CatalogRestCtrl {
 
 
 	@GetMapping("/byShop")
-	public List<Promotion> getSearchByShop(@RequestBody List<Shop> shop) {
+	public List<PromotionDto> getSearchByShop(@RequestBody List<ShopDto> shop) {
 		return catalogService.searchByShop(shop);
 	}
 
