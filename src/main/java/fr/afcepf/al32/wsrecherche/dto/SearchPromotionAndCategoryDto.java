@@ -16,4 +16,6 @@ public class SearchPromotionAndCategoryDto {
 	private CategoryProduct selectedCategory;
 
 	private List<String> keyWords ;
+	
+
 }

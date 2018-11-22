@@ -25,34 +25,31 @@ public class CatalogRestCtrl {
 
 	@Autowired
 	private ICatalogService catalogService;
-	
-	@GetMapping("")
+
+	@GetMapping("/byCategoryAndKeywords")
 	public List<Promotion> getSearchByCategoryAndKeywords(@RequestBody SearchPromotionAndCategoryDto searchPromotionAndCategoryDto) {
-		
+
 		return catalogService.searchByCategoryAndKeyWords(searchPromotionAndCategoryDto.getSelectedCategory(),searchPromotionAndCategoryDto.getKeyWords());
-	
+
 	}
-	
-	@GetMapping("")
+
+	@GetMapping("/byKeywords")
 	public List<Promotion> getSearchByKeywords(@RequestBody List<String> keyWords) {
-		
+
 		return catalogService.searchByKeyWords(keyWords);
-	
 	}
-	
-	@GetMapping("")
+
+	@GetMapping("/byCategory")
 	public List<Promotion> getSearchByCategory(@RequestBody CategoryProduct category) {
-	 
-			return catalogService.searchByCategory(category);
-	 
+
+		return catalogService.searchByCategory(category);
+
 	}
-	
-	
-	@GetMapping("")
+
+
+	@GetMapping("/byShop")
 	public List<Promotion> getSearchByShop(@RequestBody List<Shop> shop) {
-	 
-			return catalogService.searchByShop(shop);
-	 
+		return catalogService.searchByShop(shop);
 	}
- 
+
 }

@@ -31,8 +31,7 @@ import javax.validation.constraints.NotNull;
 @PrimaryKeyJoinColumn(name = "id")
 @NamedQueries({
 	@NamedQuery(name="Promotion.findAll" , query="select s From Promotion s" ),
-	@NamedQuery(name="Promotion.findAllValid" , query="select s From Promotion s WHERE s.dateRemove = null AND quantityRemaining > 0" ),
-	@NamedQuery(name="Promotion.findAllByShop" , query="" )
+	@NamedQuery(name="Promotion.findAllValid" , query="select s From Promotion s WHERE s.dateRemove = null AND quantityRemaining > 0" )
 })
 public class Promotion extends Product {
 

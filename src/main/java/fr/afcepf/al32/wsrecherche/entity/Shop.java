@@ -22,7 +22,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.apache.tomcat.jni.Address;
 
 import fr.afcepf.al32.wsrecherche.util.FollowableElementType;
 

@@ -41,10 +41,7 @@ public class CatalogService implements ICatalogService {
 	public List<Promotion> getAllDisplayablePromotion() {
 		List<Promotion> list = promotionService.findAllValid();
 		return list.stream()
-				.filter(promotion -> {
-					LocalDateTime publishDate = promotion.getPublish().getPublishDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-					return LocalDateTime.now().isBefore(publishDate.plus(promotion.getLimitTimePromotion()));
-				})
+				.filter(promotion -> filterOnDate(promotion))
 				.collect(Collectors.toList());
 	}
 
@@ -60,10 +57,7 @@ public class CatalogService implements ICatalogService {
 		List<Promotion> list = promotionService.getAllValidPromotionByProduct(products);
 
 		Stream<Promotion> stream = selectedCategory == null? list.stream() : list.stream().filter(promotion -> filterOnCategoryName(selectedCategory, promotion));
-		return stream.filter(promotion -> {
-			LocalDateTime publishDate = promotion.getPublish().getPublishDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-			return LocalDateTime.now().isBefore(publishDate.plus(promotion.getLimitTimePromotion()));
-		})
+		return stream.filter(promotion -> filterOnDate(promotion))
 				.collect(Collectors.toList());
 	}
 
@@ -75,10 +69,7 @@ public class CatalogService implements ICatalogService {
 		List<Promotion> list = promotionService.getAllValidPromotionByProduct(products);
 
 		return list.stream()
-				.filter(promotion -> {
-					LocalDateTime publishDate = promotion.getPublish().getPublishDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-					return LocalDateTime.now().isBefore(publishDate.plus(promotion.getLimitTimePromotion()));
-				})
+				.filter(promotion -> filterOnDate(promotion))
 				.collect(Collectors.toList());
 	}
 	@Override
@@ -103,25 +94,19 @@ public class CatalogService implements ICatalogService {
 		}
 	}
 
-
-
-
-
-
-
-
-
+ 
 	@Override
 	public List<Promotion> searchByShop(List<Shop> shops) { 
 		List<Promotion> list = promotionService.getAllValidPromotionByShop(shops);
-		return list.stream().filter(promotion -> filterOnShop(shops, promotion)).collect(Collectors.toList());
+		return list.stream().filter(promotion -> filterOnDate(promotion)).collect(Collectors.toList());
 	}
-
-	private boolean filterOnShop(List<Shop> shops, Promotion promotion){
-		return false;
-
+	
+	private boolean filterOnDate(Promotion promotion) {
+		LocalDateTime publishDate = promotion.getPublish().getPublishDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		return LocalDateTime.now().isBefore(publishDate.plus(promotion.getLimitTimePromotion()));
 	}
-
-
+	
+	
+	
 
 }
