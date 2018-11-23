@@ -2,7 +2,7 @@ package fr.afcepf.al32.wsrecherche.service.itf;
 
 import java.util.List;
 
-import fr.afcepf.al32.wsrecherche.dto.ShopDto;
+import fr.afcepf.al32.groupe2.ws.dto.ShopDto;
 import fr.afcepf.al32.wsrecherche.entity.BaseProduct;
 import fr.afcepf.al32.wsrecherche.entity.Promotion;
 

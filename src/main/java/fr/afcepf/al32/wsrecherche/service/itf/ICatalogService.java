@@ -2,24 +2,29 @@ package fr.afcepf.al32.wsrecherche.service.itf;
 
 import java.util.List;
 
-import fr.afcepf.al32.wsrecherche.dto.CategoryProductDto;
-import fr.afcepf.al32.wsrecherche.dto.PromotionDto;
-import fr.afcepf.al32.wsrecherche.dto.ShopDto;
+import fr.afcepf.al32.groupe2.ws.dto.CategoryProductDto;
+import fr.afcepf.al32.groupe2.ws.dto.SearchByCategoryAndKeywordsResponseDto;
+import fr.afcepf.al32.groupe2.ws.dto.SearchByCategoryResponseDto;
+import fr.afcepf.al32.groupe2.ws.dto.SearchByKeywordsResponseDto;
+import fr.afcepf.al32.groupe2.ws.dto.SearchByShopResponseDto;
+import fr.afcepf.al32.groupe2.ws.dto.ShopDto;
 import fr.afcepf.al32.wsrecherche.entity.CategoryProduct;
 import fr.afcepf.al32.wsrecherche.entity.Promotion;
 
 public interface ICatalogService {
-	
+
 	List<Promotion> getAllDisplayablePromotion();
-	
+
 	List<CategoryProduct> getAllRootCategories();
 
-	List<PromotionDto> searchByKeyWords(List<String> keyWords);
+	List<SearchByCategoryAndKeywordsResponseDto> searchByCategoryAndKeyWords( CategoryProductDto categoryProductDto, List<String> keyWords);
 
-	List<PromotionDto> searchByCategory(CategoryProductDto categoryProductDto);
+	List<SearchByCategoryResponseDto> searchByCategory(CategoryProductDto categoryProductDto);
 
-	List<PromotionDto> searchByCategoryAndKeyWords(CategoryProductDto categoryProductDto, List<String> keyWords);
+	List<SearchByKeywordsResponseDto> searchByKeyWords(List<String> keyWords);
 
-	List<PromotionDto> searchByShop(List<ShopDto> shops);
+	List<SearchByShopResponseDto> searchByShop(List<ShopDto> shops);
+
+
 
 }

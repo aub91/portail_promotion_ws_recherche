@@ -8,8 +8,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.afcepf.al32.groupe2.ws.dto.ShopDto;
 import fr.afcepf.al32.wsrecherche.dao.itf.IPromotionDao;
-import fr.afcepf.al32.wsrecherche.dto.ShopDto;
 import fr.afcepf.al32.wsrecherche.entity.BaseProduct;
 import fr.afcepf.al32.wsrecherche.entity.Promotion;
 import fr.afcepf.al32.wsrecherche.service.itf.IServicePromotion;

@@ -2,6 +2,7 @@ package fr.afcepf.al32.wsrecherche.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -11,10 +12,14 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.afcepf.al32.groupe2.ws.dto.CategoryProductDto;
+import fr.afcepf.al32.groupe2.ws.dto.PromotionDto;
+import fr.afcepf.al32.groupe2.ws.dto.SearchByCategoryAndKeywordsResponseDto;
+import fr.afcepf.al32.groupe2.ws.dto.SearchByCategoryResponseDto;
+import fr.afcepf.al32.groupe2.ws.dto.SearchByKeywordsResponseDto;
+import fr.afcepf.al32.groupe2.ws.dto.SearchByShopResponseDto;
+import fr.afcepf.al32.groupe2.ws.dto.ShopDto;
 import fr.afcepf.al32.wsrecherche.dao.itf.IRechercheProduits;
-import fr.afcepf.al32.wsrecherche.dto.CategoryProductDto;
-import fr.afcepf.al32.wsrecherche.dto.PromotionDto;
-import fr.afcepf.al32.wsrecherche.dto.ShopDto;
 import fr.afcepf.al32.wsrecherche.entity.BaseProduct;
 import fr.afcepf.al32.wsrecherche.entity.CategoryProduct;
 import fr.afcepf.al32.wsrecherche.entity.Promotion;
@@ -48,31 +53,68 @@ public class CatalogService implements ICatalogService {
 	}
 
 	@Override
-	public List<PromotionDto> searchByCategoryAndKeyWords(CategoryProductDto categoryProductDto, List<String> keyWords) {
+	public List<SearchByCategoryAndKeywordsResponseDto> searchByCategoryAndKeyWords(CategoryProductDto categoryProductDto, List<String> keyWords) {
 
 		List<BaseProduct> products = rechercheProduitsDao.rechercherProduitSurMotsCles(keyWords);
 		List<Promotion> list = promotionService.getAllValidPromotionByProduct(products);
-
 		Stream<Promotion> stream = categoryProductDto == null? list.stream() : list.stream().filter(promotion -> filterOnCategoryName(categoryProductDto, promotion));
-		return stream.filter(promotion -> filterOnDate(promotion)).map(promotion-> new PromotionDto(promotion))
+		List<PromotionDto> listePromotionDto= stream.filter(promotion -> filterOnDate(promotion))
+				.map(promotion-> new PromotionDto(promotion.getId()))
 				.collect(Collectors.toList());
+
+		SearchByCategoryAndKeywordsResponseDto searchByCategoryAndKeywordsResponseDto = new SearchByCategoryAndKeywordsResponseDto();
+		searchByCategoryAndKeywordsResponseDto.setCategoryProductDto(categoryProductDto);
+		searchByCategoryAndKeywordsResponseDto.setPromotionsDto(listePromotionDto);
+		searchByCategoryAndKeywordsResponseDto.setKeyWords(keyWords);
+
+		List<SearchByCategoryAndKeywordsResponseDto> searchByCategoryAndKeywordsResponseDtos = new ArrayList<SearchByCategoryAndKeywordsResponseDto>();
+		searchByCategoryAndKeywordsResponseDtos.add(searchByCategoryAndKeywordsResponseDto);
+		return searchByCategoryAndKeywordsResponseDtos;
+
+
 	}
 
-
 	@Override
-	public List<PromotionDto> searchByKeyWords(List<String> keyWords) {
+	public List<SearchByKeywordsResponseDto> searchByKeyWords(List<String> keyWords) {
 
 		List<BaseProduct> products = rechercheProduitsDao.rechercherProduitSurMotsCles(keyWords);
 		List<Promotion> list = promotionService.getAllValidPromotionByProduct(products);
-
-		return list.stream()
-				.filter(promotion -> filterOnDate(promotion)).map(promotion-> new PromotionDto(promotion))
+		SearchByKeywordsResponseDto searchByKeywordsResponseDto = new SearchByKeywordsResponseDto();
+		List<PromotionDto> listePromotionDto=  list.stream()
+				.filter(promotion -> filterOnDate(promotion))
+				.map(promotion-> new PromotionDto(promotion.getId()))
 				.collect(Collectors.toList());
+
+		searchByKeywordsResponseDto.setPromotionsDto(listePromotionDto);
+		searchByKeywordsResponseDto.setKeyWords(keyWords);
+
+		List<SearchByKeywordsResponseDto> searchByKeywordsResponseDtos = new ArrayList<SearchByKeywordsResponseDto>();
+		searchByKeywordsResponseDtos.add(searchByKeywordsResponseDto);
+
+		return searchByKeywordsResponseDtos ;
 	}
+
+
+
+
 	@Override
-	public List<PromotionDto> searchByCategory(CategoryProductDto categoryProductDto) {
+	public List<SearchByCategoryResponseDto> searchByCategory(CategoryProductDto categoryProductDto) {
 		List<Promotion> list = getAllDisplayablePromotion();
-		return list.stream().filter(promotion -> filterOnCategoryName(categoryProductDto, promotion)).map(promotion-> new PromotionDto(promotion)).collect(Collectors.toList());
+		SearchByCategoryResponseDto searchByCategoryResponseDto = new SearchByCategoryResponseDto();
+		List<PromotionDto> listePromotionDto=  list.stream()
+				.filter(promotion -> filterOnCategoryName(categoryProductDto, promotion))
+				.map(promotion-> new PromotionDto(promotion.getId()))
+				.collect(Collectors.toList());
+
+		searchByCategoryResponseDto.setPromotionsDto(listePromotionDto);
+		searchByCategoryResponseDto.setCategoryProductDto(categoryProductDto);
+
+		List<SearchByCategoryResponseDto> searchByCategoryResponseDtos = new ArrayList<SearchByCategoryResponseDto>();
+		searchByCategoryResponseDtos.add(searchByCategoryResponseDto);
+		return searchByCategoryResponseDtos;
+
+
+
 	}
 
 	private boolean filterOnCategoryName(CategoryProductDto categoryProductDto, Promotion promotion){
@@ -91,13 +133,23 @@ public class CatalogService implements ICatalogService {
 		}
 	}
 
- 
+
 	@Override
-	public List<PromotionDto> searchByShop(List<ShopDto> shops) { 
+	public List<SearchByShopResponseDto> searchByShop(List<ShopDto> shops) { 
 		List<Promotion> list = promotionService.getAllValidPromotionByShop(shops);
-		return list.stream().filter(promotion -> filterOnDate(promotion)).map(promotion-> new PromotionDto(promotion)).collect(Collectors.toList());
+		SearchByShopResponseDto searchByShopResponseDto = new SearchByShopResponseDto();
+		List<PromotionDto> listePromotionDto= list.stream()
+				.filter(promotion -> filterOnDate(promotion))
+				.map(promotion-> new PromotionDto(promotion.getId()))
+				.collect(Collectors.toList());
+
+		searchByShopResponseDto.setPromotionsDto(listePromotionDto);
+		searchByShopResponseDto.setShopDtos(shops);
+		List<SearchByShopResponseDto> shopResponseDtos = new ArrayList<SearchByShopResponseDto>();
+		
+		return shopResponseDtos; 
 	}
-	
+
 	private boolean filterOnDate(Promotion promotion) {
 		LocalDateTime publishDate = promotion.getPublish().getPublishDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 		return LocalDateTime.now().isBefore(publishDate.plus(promotion.getLimitTimePromotion()));

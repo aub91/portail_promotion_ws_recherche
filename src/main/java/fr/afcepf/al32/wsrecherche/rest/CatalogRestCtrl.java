@@ -3,21 +3,20 @@ package fr.afcepf.al32.wsrecherche.rest;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.afcepf.al32.wsrecherche.dto.CategoryProductDto;
-import fr.afcepf.al32.wsrecherche.dto.PromotionDto;
-import fr.afcepf.al32.wsrecherche.dto.SearchPromotionAndCategoryDto;
-import fr.afcepf.al32.wsrecherche.dto.ShopDto;
+import fr.afcepf.al32.groupe2.ws.dto.CategoryAndKeywordsDto;
+import fr.afcepf.al32.groupe2.ws.dto.CategoryProductDto;
+import fr.afcepf.al32.groupe2.ws.dto.SearchByCategoryAndKeywordsResponseDto;
+import fr.afcepf.al32.groupe2.ws.dto.SearchByCategoryResponseDto;
+import fr.afcepf.al32.groupe2.ws.dto.SearchByKeywordsResponseDto;
+import fr.afcepf.al32.groupe2.ws.dto.SearchByShopResponseDto;
+import fr.afcepf.al32.groupe2.ws.dto.ShopDto;
 import fr.afcepf.al32.wsrecherche.service.itf.ICatalogService;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data @NoArgsConstructor @AllArgsConstructor
 @RestController
 @RequestMapping(value="/rest/promotionProduct", headers="Accept=application/json")
 public class CatalogRestCtrl {
@@ -26,30 +25,24 @@ public class CatalogRestCtrl {
 	@Autowired
 	private ICatalogService catalogService;
 
-	@GetMapping("/byCategoryAndKeywords")
-	public List<PromotionDto> getSearchByCategoryAndKeywords(@RequestBody SearchPromotionAndCategoryDto searchPromotionAndCategoryDto) {
-
-		return catalogService.searchByCategoryAndKeyWords(searchPromotionAndCategoryDto.getCategoryProductDto(),searchPromotionAndCategoryDto.getKeyWords());
-
+	@PostMapping("/byCategoryAndKeywords")
+	public List<SearchByCategoryAndKeywordsResponseDto> getSearchByCategoryAndKeywords(@RequestBody CategoryAndKeywordsDto categoryAndKeywordsDto) {
+		return catalogService.searchByCategoryAndKeyWords(categoryAndKeywordsDto.getCategoryProductDto(),categoryAndKeywordsDto.getKeyWords());
 	}
 
-	@GetMapping("/byKeywords")
-	public List<PromotionDto> getSearchByKeywords(@RequestBody List<String> keyWords) {
-
+	@PostMapping("/byKeywords")
+	public List<SearchByKeywordsResponseDto> getSearchByKeywords(@RequestBody List<String> keyWords) {
 		return catalogService.searchByKeyWords(keyWords);
 	}
 
-	@GetMapping("/byCategory")
-	public List<PromotionDto> getSearchByCategory(@RequestBody CategoryProductDto categoryProductDto) {
-
-		return catalogService.searchByCategory(categoryProductDto);
-
+	@PostMapping("/byCategory")
+	public List<SearchByCategoryResponseDto> getSearchByCategory(@RequestBody CategoryProductDto categoryProductDto) {
+		return catalogService.searchByCategory(categoryProductDto) ;
 	}
 
-
-	@GetMapping("/byShop")
-	public List<PromotionDto> getSearchByShop(@RequestBody List<ShopDto> shop) {
-		return catalogService.searchByShop(shop);
+	@PostMapping("/byShop")
+	public List<SearchByShopResponseDto> getSearchByShop(@RequestBody List<ShopDto> shop) {
+		return catalogService.searchByShop(shop) ;
 	}
 
 }
