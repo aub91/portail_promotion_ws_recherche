@@ -26,22 +26,22 @@ public class CatalogRestCtrl {
 	private ICatalogService catalogService;
 
 	@PostMapping("/byCategoryAndKeywords")
-	public List<SearchByCategoryAndKeywordsResponseDto> getSearchByCategoryAndKeywords(@RequestBody CategoryAndKeywordsDto categoryAndKeywordsDto) {
+	public SearchByCategoryAndKeywordsResponseDto getSearchByCategoryAndKeywords(@RequestBody CategoryAndKeywordsDto categoryAndKeywordsDto) {
 		return catalogService.searchByCategoryAndKeyWords(categoryAndKeywordsDto.getCategoryProductDto(),categoryAndKeywordsDto.getKeyWords());
 	}
-
+		
 	@PostMapping("/byKeywords")
-	public List<SearchByKeywordsResponseDto> getSearchByKeywords(@RequestBody List<String> keyWords) {
+	public SearchByKeywordsResponseDto getSearchByKeywords(@RequestBody List<String> keyWords) {
 		return catalogService.searchByKeyWords(keyWords);
 	}
 
 	@PostMapping("/byCategory")
-	public List<SearchByCategoryResponseDto> getSearchByCategory(@RequestBody CategoryProductDto categoryProductDto) {
+	public SearchByCategoryResponseDto getSearchByCategory(@RequestBody CategoryProductDto categoryProductDto) {
 		return catalogService.searchByCategory(categoryProductDto) ;
 	}
 
 	@PostMapping("/byShop")
-	public List<SearchByShopResponseDto> getSearchByShop(@RequestBody List<ShopDto> shop) {
+	public SearchByShopResponseDto getSearchByShop(@RequestBody List<ShopDto> shop) {
 		return catalogService.searchByShop(shop) ;
 	}
 

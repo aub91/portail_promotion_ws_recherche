@@ -53,7 +53,7 @@ public class CatalogService implements ICatalogService {
 	}
 
 	@Override
-	public List<SearchByCategoryAndKeywordsResponseDto> searchByCategoryAndKeyWords(CategoryProductDto categoryProductDto, List<String> keyWords) {
+	public SearchByCategoryAndKeywordsResponseDto searchByCategoryAndKeyWords(CategoryProductDto categoryProductDto, List<String> keyWords) {
 
 		List<BaseProduct> products = rechercheProduitsDao.rechercherProduitSurMotsCles(keyWords);
 		List<Promotion> list = promotionService.getAllValidPromotionByProduct(products);
@@ -67,15 +67,13 @@ public class CatalogService implements ICatalogService {
 		searchByCategoryAndKeywordsResponseDto.setPromotionsDto(listePromotionDto);
 		searchByCategoryAndKeywordsResponseDto.setKeyWords(keyWords);
 
-		List<SearchByCategoryAndKeywordsResponseDto> searchByCategoryAndKeywordsResponseDtos = new ArrayList<SearchByCategoryAndKeywordsResponseDto>();
-		searchByCategoryAndKeywordsResponseDtos.add(searchByCategoryAndKeywordsResponseDto);
-		return searchByCategoryAndKeywordsResponseDtos;
+		return searchByCategoryAndKeywordsResponseDto;
 
 
 	}
 
 	@Override
-	public List<SearchByKeywordsResponseDto> searchByKeyWords(List<String> keyWords) {
+	public SearchByKeywordsResponseDto searchByKeyWords(List<String> keyWords) {
 
 		List<BaseProduct> products = rechercheProduitsDao.rechercherProduitSurMotsCles(keyWords);
 		List<Promotion> list = promotionService.getAllValidPromotionByProduct(products);
@@ -87,31 +85,26 @@ public class CatalogService implements ICatalogService {
 
 		searchByKeywordsResponseDto.setPromotionsDto(listePromotionDto);
 		searchByKeywordsResponseDto.setKeyWords(keyWords);
-
-		List<SearchByKeywordsResponseDto> searchByKeywordsResponseDtos = new ArrayList<SearchByKeywordsResponseDto>();
-		searchByKeywordsResponseDtos.add(searchByKeywordsResponseDto);
-
-		return searchByKeywordsResponseDtos ;
+		
+		return searchByKeywordsResponseDto ;
 	}
 
 
 
 
 	@Override
-	public List<SearchByCategoryResponseDto> searchByCategory(CategoryProductDto categoryProductDto) {
+	public SearchByCategoryResponseDto searchByCategory(CategoryProductDto categoryProductDto) {
 		List<Promotion> list = getAllDisplayablePromotion();
-		SearchByCategoryResponseDto searchByCategoryResponseDto = new SearchByCategoryResponseDto();
+		
 		List<PromotionDto> listePromotionDto=  list.stream()
 				.filter(promotion -> filterOnCategoryName(categoryProductDto, promotion))
 				.map(promotion-> new PromotionDto(promotion.getId()))
 				.collect(Collectors.toList());
-
+		SearchByCategoryResponseDto searchByCategoryResponseDto = new SearchByCategoryResponseDto();
 		searchByCategoryResponseDto.setPromotionsDto(listePromotionDto);
 		searchByCategoryResponseDto.setCategoryProductDto(categoryProductDto);
 
-		List<SearchByCategoryResponseDto> searchByCategoryResponseDtos = new ArrayList<SearchByCategoryResponseDto>();
-		searchByCategoryResponseDtos.add(searchByCategoryResponseDto);
-		return searchByCategoryResponseDtos;
+		return searchByCategoryResponseDto;
 
 
 
@@ -135,7 +128,7 @@ public class CatalogService implements ICatalogService {
 
 
 	@Override
-	public List<SearchByShopResponseDto> searchByShop(List<ShopDto> shops) { 
+	public SearchByShopResponseDto searchByShop(List<ShopDto> shops) { 
 		List<Promotion> list = promotionService.getAllValidPromotionByShop(shops);
 		SearchByShopResponseDto searchByShopResponseDto = new SearchByShopResponseDto();
 		List<PromotionDto> listePromotionDto= list.stream()
@@ -145,9 +138,8 @@ public class CatalogService implements ICatalogService {
 
 		searchByShopResponseDto.setPromotionsDto(listePromotionDto);
 		searchByShopResponseDto.setShopDtos(shops);
-		List<SearchByShopResponseDto> shopResponseDtos = new ArrayList<SearchByShopResponseDto>();
-		
-		return shopResponseDtos; 
+	
+		return searchByShopResponseDto; 
 	}
 
 	private boolean filterOnDate(Promotion promotion) {

@@ -17,13 +17,16 @@ public interface ICatalogService {
 
 	List<CategoryProduct> getAllRootCategories();
 
-	List<SearchByCategoryAndKeywordsResponseDto> searchByCategoryAndKeyWords( CategoryProductDto categoryProductDto, List<String> keyWords);
+	SearchByCategoryAndKeywordsResponseDto searchByCategoryAndKeyWords(CategoryProductDto categoryProductDto,
+			List<String> keyWords);
 
-	List<SearchByCategoryResponseDto> searchByCategory(CategoryProductDto categoryProductDto);
+	SearchByKeywordsResponseDto searchByKeyWords(List<String> keyWords);
 
-	List<SearchByKeywordsResponseDto> searchByKeyWords(List<String> keyWords);
+	SearchByCategoryResponseDto searchByCategory(CategoryProductDto categoryProductDto);
 
-	List<SearchByShopResponseDto> searchByShop(List<ShopDto> shops);
+	SearchByShopResponseDto searchByShop(List<ShopDto> shops);
+
+	
 
 
 
